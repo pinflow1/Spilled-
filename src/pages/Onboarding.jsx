@@ -86,103 +86,75 @@ export default function Onboarding({ onComplete, onSkip }) {
     </div>
   );
 
-  // Page 0 – The Problem
+  // Page 0 – Original brand intro
   if (page === 0) {
     return (
       <div style={pageStyle} ref={containerRef}>
         <div style={contentStyle}>
-          <div style={{ marginBottom: 40, display: "flex", justifyContent: "center" }}>
-            <DrippingS size={56} color="#f5f5f7" />
+          <div style={{ marginBottom: 32, display: "flex", justifyContent: "center" }}>
+            <DrippingS size={64} color="#f5f5f7" />
           </div>
-          <div style={{ marginBottom: 24 }}>
-            <div style={{
-              fontSize: 12,
-              fontWeight: 600,
-              color: "#888",
-              fontFamily: "'DM Mono', monospace",
-              letterSpacing: "0.2em",
-              marginBottom: 12,
-              textAlign: "center",
-            }}>
-              THE CREATOR'S DILEMMA
-            </div>
-            <h1 style={{
-              fontSize: 34,
-              fontWeight: 800,
-              color: "#f5f5f7",
-              lineHeight: 1.2,
-              fontFamily: "'DM Sans', sans-serif",
-              textAlign: "center",
-              marginBottom: 16,
-              letterSpacing: "-0.02em",
-            }}>
-              Most creators find trends after they peak.
-            </h1>
-            <p style={{
-              fontSize: 16,
-              color: "#aaa",
-              textAlign: "center",
-              lineHeight: 1.5,
-              fontFamily: "'DM Sans', sans-serif",
-            }}>
-              By the time you see it, your window is gone.
-            </p>
-          </div>
-
-          <div style={{
-            background: "#111",
-            border: "1px solid #222",
-            borderRadius: 28,
-            padding: 24,
-            margin: "32px 0",
+          <h1 style={{
+            fontSize: 48,
+            fontWeight: 900,
+            margin: "0 0 12px",
+            color: "#f5f5f7",
+            fontFamily: "'DM Sans', sans-serif",
+            letterSpacing: "-0.04em",
+            textAlign: "center",
           }}>
-            <div style={{ display: "flex", alignItems: "flex-end", height: 80, gap: 6, marginBottom: 16 }}>
-              {[8, 18, 32, 58, 78, 100, 94, 82, 68, 52, 38, 28].map((h, i) => (
-                <div
-                  key={i}
-                  style={{
-                    flex: 1,
-                    height: `${h * 0.7}px`,
-                    background: i < 4 ? "#00d4aa" : "#333",
-                    borderRadius: 8,
-                    transition: "height 0.2s ease",
-                  }}
-                />
-              ))}
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#555" }}>
-              <span style={{ borderLeft: "2px solid #00d4aa", paddingLeft: 6 }}>Spilled finds you here</span>
-              <span style={{ borderLeft: "2px solid #333", paddingLeft: 6 }}>Everyone else</span>
-            </div>
-          </div>
-
+            spilled.
+          </h1>
+          <p style={{
+            fontSize: 16,
+            color: "#888",
+            margin: "0 0 48px",
+            fontFamily: "'DM Sans', sans-serif",
+            lineHeight: 1.5,
+            textAlign: "center",
+            maxWidth: 260,
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}>
+            The internet's messy. We track it before everyone else does.
+          </p>
           <button
             onClick={nextPage}
             style={{
               background: "#f5f5f7",
               border: "none",
-              borderRadius: 44,
-              padding: "16px 24px",
-              fontSize: 17,
-              fontWeight: 600,
+              borderRadius: 50,
+              padding: "15px 44px",
+              fontSize: 16,
+              fontWeight: 800,
               color: "#0a0a0a",
               cursor: "pointer",
-              width: "100%",
               fontFamily: "'DM Sans', sans-serif",
+              letterSpacing: "-0.01em",
+              width: "100%",
               transition: "transform 0.15s cubic-bezier(0.2, 1.3, 0.4, 1)",
             }}
             onMouseDown={e => e.currentTarget.style.transform = "scale(0.97)"}
             onMouseUp={e => e.currentTarget.style.transform = "scale(1)"}
           >
-            Show me the difference
+            Get early access
           </button>
+          <p style={{
+            fontSize: 12,
+            color: "#333",
+            marginTop: 14,
+            textAlign: "center",
+            fontFamily: "'DM Sans', sans-serif",
+          }}>
+            No credit card required
+          </p>
           {skipLink}
         </div>
       </div>
     );
   }
 
-  // Page 1 – How it works (Thread format)
+  // Page 1 – The Thread format + line chart
   if (page === 1) {
     return (
       <div style={pageStyle} ref={containerRef}>
@@ -214,8 +186,45 @@ export default function Onboarding({ onComplete, onSkip }) {
               lineHeight: 1.5,
               fontFamily: "'DM Sans', sans-serif",
             }}>
-              We stitch together posts, comments, and sources so you see the full arc of a story – from first signal to blow‑up.
+              We detect accelerating trends before they peak – and stitch the full story from first signal to blow‑up.
             </p>
+          </div>
+
+          {/* Line chart showing trend detection */}
+          <div style={{
+            background: "#111",
+            border: "1px solid #222",
+            borderRadius: 24,
+            padding: 20,
+            marginBottom: 24,
+          }}>
+            <svg width="100%" height="80" viewBox="0 0 400 80" preserveAspectRatio="none">
+              <path
+                d="M0,70 L40,60 L80,55 L120,40 L160,25 L200,15 L240,20 L280,40 L320,55 L360,65 L400,70"
+                stroke="#00d4aa"
+                strokeWidth="2"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              {/* Shaded area under curve */}
+              <path
+                d="M0,70 L40,60 L80,55 L120,40 L160,25 L200,15 L240,20 L280,40 L320,55 L360,65 L400,70 L400,80 L0,80 Z"
+                fill="#00d4aa20"
+              />
+              {/* Marker for "Spilled finds you here" */}
+              <circle cx="200" cy="15" r="4" fill="#00d4aa" />
+              <text x="210" y="10" fontSize="8" fill="#00d4aa" fontFamily="'DM Mono', monospace">Spilled</text>
+              {/* Marker for peak */}
+              <circle cx="280" cy="40" r="3" fill="#555" />
+              <text x="285" y="44" fontSize="8" fill="#555" fontFamily="'DM Mono', monospace">Everyone else</text>
+            </svg>
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, fontSize: 10, color: "#555" }}>
+              <span>Early signal</span>
+              <span>Accelerating</span>
+              <span>Peak</span>
+              <span>Cooling</span>
+            </div>
           </div>
 
           <div style={{
@@ -283,7 +292,7 @@ export default function Onboarding({ onComplete, onSkip }) {
     );
   }
 
-  // Page 2 – Your creator stack (no emojis, clean list)
+  // Page 2 – Where do you create? (content formats)
   if (page === 2) {
     return (
       <div style={pageStyle} ref={containerRef}>
@@ -381,38 +390,65 @@ export default function Onboarding({ onComplete, onSkip }) {
     );
   }
 
-  // Page 3 – Email capture (free tier)
+  // Page 3 – Original email capture (with Google button)
   return (
     <div style={pageStyle} ref={containerRef}>
       <div style={contentStyle}>
         <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <div style={{ marginBottom: 24, display: "flex", justifyContent: "center" }}>
+          <div style={{ marginBottom: 20, display: "flex", justifyContent: "center" }}>
             <DrippingS size={48} color="#555" />
           </div>
           <h2 style={{
-            fontSize: 32,
+            fontSize: 28,
             fontWeight: 700,
             color: "#f5f5f7",
             marginBottom: 8,
             fontFamily: "'DM Sans', sans-serif",
+            letterSpacing: "-0.02em",
           }}>
-            You're in.
+            You're almost in
           </h2>
           <p style={{
-            fontSize: 16,
-            color: "#aaa",
-            lineHeight: 1.4,
-            marginBottom: 8,
-          }}>
-            We'll send you a daily brief – or check the app anytime.
-          </p>
-          <p style={{
             fontSize: 14,
-            color: "#555",
-            fontFamily: "'DM Mono', monospace",
+            color: "#888",
+            marginBottom: 24,
           }}>
-            First 30 days: full access. No card.
+            Free account. No card needed.
           </p>
+        </div>
+
+        <button
+          style={{
+            width: "100%",
+            background: "#111",
+            border: "1px solid #2a2a2a",
+            borderRadius: 50,
+            padding: "13px",
+            fontSize: 14,
+            fontWeight: 700,
+            color: "#f5f5f7",
+            cursor: "pointer",
+            fontFamily: "'DM Sans', sans-serif",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 10,
+            marginBottom: 12,
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 18 18">
+            <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
+            <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+            <path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/>
+            <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"/>
+          </svg>
+          Continue with Google
+        </button>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+          <div style={{ flex: 1, height: 1, background: "#1a1a1a" }} />
+          <span style={{ fontSize: 11, color: "#333", fontFamily: "'DM Mono', monospace" }}>or</span>
+          <div style={{ flex: 1, height: 1, background: "#1a1a1a" }} />
         </div>
 
         <input
@@ -425,11 +461,11 @@ export default function Onboarding({ onComplete, onSkip }) {
             background: "#111",
             border: `1px solid ${email ? "#666" : "#222"}`,
             borderRadius: 44,
-            padding: "16px 20px",
-            fontSize: 16,
+            padding: "14px 18px",
+            fontSize: 15,
             color: "#f5f5f7",
             fontFamily: "'DM Sans', sans-serif",
-            marginBottom: 16,
+            marginBottom: 12,
             outline: "none",
             transition: "border-color 0.2s ease",
           }}
@@ -440,25 +476,35 @@ export default function Onboarding({ onComplete, onSkip }) {
         <button
           onClick={completeOnboarding}
           style={{
+            width: "100%",
             background: "#f5f5f7",
             border: "none",
-            borderRadius: 44,
-            padding: "16px 24px",
-            fontSize: 17,
-            fontWeight: 600,
+            borderRadius: 50,
+            padding: "14px",
+            fontSize: 15,
+            fontWeight: 800,
             color: "#0a0a0a",
             cursor: "pointer",
-            width: "100%",
             fontFamily: "'DM Sans', sans-serif",
             transition: "transform 0.15s cubic-bezier(0.2, 1.3, 0.4, 1)",
           }}
           onMouseDown={e => e.currentTarget.style.transform = "scale(0.97)"}
           onMouseUp={e => e.currentTarget.style.transform = "scale(1)"}
         >
-          Start my briefing
+          Start for free
         </button>
 
-        <div style={{ textAlign: "center", marginTop: 24 }}>
+        <p style={{
+          textAlign: "center",
+          fontSize: 12,
+          color: "#333",
+          marginTop: 14,
+          fontFamily: "'DM Sans', sans-serif",
+        }}>
+          Cancel anytime
+        </p>
+
+        <div style={{ textAlign: "center", marginTop: 20 }}>
           <button
             onClick={skipToFeed}
             style={{
@@ -468,7 +514,6 @@ export default function Onboarding({ onComplete, onSkip }) {
               fontSize: 13,
               fontFamily: "'DM Mono', monospace",
               cursor: "pointer",
-              padding: "8px 16px",
             }}
           >
             No thanks, take me to the feed
@@ -477,4 +522,4 @@ export default function Onboarding({ onComplete, onSkip }) {
       </div>
     </div>
   );
-}
+        }
