@@ -36,7 +36,7 @@ export default function Page0({ onNext, onSkip }) {
           color: "#0a0a0a",
           cursor: "pointer",
           width: "100%"
-        }}>Get early access</button>
+        }}>Get the latest spills</button>
         
         <p style={{
           fontSize: 12,
