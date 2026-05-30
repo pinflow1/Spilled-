@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DrippingS from "../../components/DrippingS";
 
 const COUNTRIES = [
@@ -8,7 +8,7 @@ const COUNTRIES = [
   "Nigeria", "South Africa", "Other"
 ];
 
-export default function Page3({ onComplete, onSkip, onLogin }) {
+export default function Page3({ onComplete, onSkip, onLogin, onUserData }) {
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -16,6 +16,13 @@ export default function Page3({ onComplete, onSkip, onLogin }) {
   const [agree, setAgree] = useState(false);
 
   const isValid = fullName && username && email && country && agree;
+
+  // Send data to parent whenever fields change
+  useEffect(() => {
+    if (onUserData) {
+      onUserData({ fullName, username, email, country });
+    }
+  }, [fullName, username, email, country, onUserData]);
 
   return (
     <div style={{ position: "relative", minHeight: "100vh", background: "#0a0a0a", padding: "80px 24px 48px", display: "flex", flexDirection: "column" }}>
