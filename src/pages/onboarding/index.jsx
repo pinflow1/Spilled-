@@ -38,5 +38,5 @@ export default function Onboarding({ onComplete, onSkip, onLogin }) {
   if (page === 0) return <Page0 onNext={nextPage} onSkip={skipToFeed} />;
   if (page === 1) return <Page1 onNext={nextPage} onSkip={skipToFeed} />;
   if (page === 2) return <Page2 selected={formats} onToggle={toggleFormat} onNext={nextPage} onSkip={skipToFeed} />;
-  return <Page3 onComplete={completeSignup} onSkip={skipToFeed} onLogin={onLogin} />;
+  return <Page3 onComplete={completeSignup} onSkip={skipToFeed} onLogin={onLogin} onUserData={handleUserData} />;
 }
