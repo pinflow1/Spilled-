@@ -10,18 +10,24 @@ import SavedPage from "./pages/SavedPage";
 import ProfilePage from "./pages/ProfilePage";
 
 export default function App() {
-  const [screen, setScreen] = useState("onboarding"); // "onboarding" | "app"
+  const [screen, setScreen] = useState("onboarding"); // "onboarding" | "app" | "login"
   const [tab, setTab] = useState("feed");
   const [openStory, setOpenStory] = useState(null);
   const [savedIds, setSavedIds] = useState([]);
   const [loading, setLoading] = useState(false);
   const [animDrip, setAnimDrip] = useState(false);
-  const [userPreferences, setUserPreferences] = useState(null); // optional: store onboarding data
+  const [userPreferences, setUserPreferences] = useState(null);
 
   const handleOnboardingComplete = (data) => {
-    // Save user preferences if needed
+    // Save user preferences
     if (data && !data.skipped) {
-      setUserPreferences({ formats: data.formats, email: data.email });
+      setUserPreferences({ 
+        formats: data.formats, 
+        fullName: data.fullName,
+        username: data.username,
+        email: data.email,
+        country: data.country
+      });
       console.log("Onboarding completed with:", data);
     } else {
       console.log("Onboarding skipped");
@@ -37,8 +43,12 @@ export default function App() {
   };
 
   const handleOnboardingSkip = () => {
-    // Called when user clicks "Skip to feed" on any page
     handleOnboardingComplete({ skipped: true });
+  };
+
+  const handleLogin = () => {
+    // For now, just skip to app. Later you can implement proper login
+    setScreen("app");
   };
 
   const handleSave = (id) =>
@@ -57,7 +67,7 @@ export default function App() {
 
   // ── ONBOARDING ──
   if (screen === "onboarding" && !loading) {
-    return <Onboarding onComplete={handleOnboardingComplete} onSkip={handleOnboardingSkip} />;
+    return <Onboarding onComplete={handleOnboardingComplete} onSkip={handleOnboardingSkip} onLogin={handleLogin} />;
   }
 
   // ── LOADING / DRIP ANIMATION ──
@@ -110,7 +120,7 @@ export default function App() {
               fontFamily: "'DM Mono', monospace",
             }}
           >
-            Building your feed...
+            Brewing your feed...
           </div>
         </div>
       </div>
@@ -153,4 +163,4 @@ export default function App() {
       <BottomNav active={tab} onChange={handleTabChange} />
     </div>
   );
-              }
+}
