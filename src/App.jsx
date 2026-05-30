@@ -1,7 +1,7 @@
 import { useState } from "react";
 import DrippingS from "./components/DrippingS";
 import BottomNav from "./components/BottomNav";
-import Onboarding from "./pages/Onboarding";
+import Onboarding from "./pages/onboarding";
 import FeedPage from "./pages/FeedPage";
 import ThreadView from "./pages/ThreadView";
 import SearchPage from "./pages/SearchPage";
