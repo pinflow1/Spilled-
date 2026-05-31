@@ -34,7 +34,7 @@ function TopStoryCard({ story, onClick }) {
       </div>
 
       <p style={{
-        fontSize: 13, fontWeight: 700, color: "#ddd",
+        fontSize: 13, fontWeight: 700, color: "#aaa",
         fontFamily: "'DM Sans', sans-serif",
         lineHeight: 1.45, letterSpacing: "-0.01em",
         margin: 0, flex: 1,
@@ -43,7 +43,7 @@ function TopStoryCard({ story, onClick }) {
       </p>
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span style={{ fontSize: 12, fontWeight: 700, color: "#f5f5f7", fontFamily: "'DM Mono', monospace" }}>
+        <span style={{ fontSize: 12, fontWeight: 700, color: "#999", fontFamily: "'DM Mono', monospace" }}>
           {story.growth}
         </span>
         <Sparkline data={story.trend} color="#555" w={44} h={18} />
@@ -95,7 +95,7 @@ function SpillRow({ item, onClick, saved, onSave, index }) {
 
         {/* Headline */}
         <h3 style={{
-          fontSize: 15, fontWeight: 700, color: "#ebebeb",
+          fontSize: 15, fontWeight: 700, color: "#ccc",
           fontFamily: "'DM Sans', sans-serif",
           lineHeight: 1.45, letterSpacing: "-0.02em", margin: "0 0 7px",
         }}>
@@ -150,9 +150,9 @@ export default function FeedPage({ onOpenStory, savedIds, onSave }) {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
             {/* Wordmark */}
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <DrippingS size={18} color="#f5f5f7" />
+              <DrippingS size={18} color="#ccc" />
               <span style={{
-                fontSize: 19, fontWeight: 900, color: "#f5f5f7",
+                fontSize: 19, fontWeight: 900, color: "#ccc",
                 fontFamily: "'DM Sans', sans-serif", letterSpacing: "-0.04em",
               }}>
                 spilled.
@@ -195,10 +195,10 @@ export default function FeedPage({ onOpenStory, savedIds, onSave }) {
                 <button key={cat} onClick={() => setActiveTab(cat)} style={{
                   background: "none", borderRadius: 0,
                   border: "none",
-                  borderBottom: `1.5px solid ${a ? "#f5f5f7" : "transparent"}`,
+                  borderBottom: `1.5px solid ${a ? "#bbb" : "transparent"}`,
                   padding: "2px 11px 8px",
                   fontSize: 12, fontWeight: a ? 700 : 400,
-                  color: a ? "#f5f5f7" : "#555",
+                  color: a ? "#ccc" : "#555",
                   cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
                   transition: "color 0.15s, border-color 0.15s",
                 }}>
