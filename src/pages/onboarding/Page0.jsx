@@ -4,7 +4,15 @@ import { skipLink } from "./styles";
 export default function Page0({ onNext, onSkip }) {
   return (
     <div style={{ position: "relative", minHeight: "100vh", background: "#0a0a0a", padding: "80px 24px 48px", display: "flex", flexDirection: "column" }}>
-      <div style={{ maxWidth: 500, margin: "0 auto", width: "100%", textAlign: "center" }}>
+      <div style={{
+        maxWidth: 500,
+        margin: "0 auto",
+        width: "100%",
+        textAlign: "center",
+        animation: "fadeInUp 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards",
+        opacity: 0,
+        transform: "translateY(16px)",
+      }}>
         <div style={{ marginBottom: 32 }}><DrippingS size={64} color="#f5f5f7" /></div>
         <h1 style={{
           fontSize: 48,
@@ -35,8 +43,12 @@ export default function Page0({ onNext, onSkip }) {
           letterSpacing: "-0.01em",
           color: "#0a0a0a",
           cursor: "pointer",
-          width: "100%"
-        }}>Get the latest spills</button>
+          width: "100%",
+          transition: "transform 0.15s cubic-bezier(0.2, 1.3, 0.4, 1)",
+        }}
+        onMouseDown={e => e.currentTarget.style.transform = "scale(0.97)"}
+        onMouseUp={e => e.currentTarget.style.transform = "scale(1)"}
+        >Get the latest spills</button>
         
         <p style={{
           fontSize: 12,
@@ -47,6 +59,11 @@ export default function Page0({ onNext, onSkip }) {
         
         {skipLink(onSkip)}
       </div>
+      <style>{`
+        @keyframes fadeInUp {
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }
