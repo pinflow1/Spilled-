@@ -68,6 +68,7 @@ export default function BottomNav({ active, onChange }) {
           left: 16,
           right: 16,
           zIndex: 100,
+          position: "relative", // 👈 makes absolute child position relative to this container
           background: "rgba(10, 10, 10, 0.75)",
           backdropFilter: "blur(28px)",
           borderRadius: 100,
@@ -78,6 +79,7 @@ export default function BottomNav({ active, onChange }) {
           justifyContent: "space-between",
           alignItems: "center",
           gap: 2,
+          WebkitTapHighlightColor: "transparent", // 👈 kill blue flash on container
         }}
       >
         {/* Sliding indicator */}
@@ -118,6 +120,7 @@ export default function BottomNav({ active, onChange }) {
                 transition: "transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)",
                 transform: isActive ? "scale(1.05)" : "scale(1)",
                 zIndex: 2,
+                WebkitTapHighlightColor: "transparent", // 👈 kill blue flash on each button
               }}
             >
               {tab.icon(isActive)}
@@ -147,4 +150,4 @@ export default function BottomNav({ active, onChange }) {
       `}</style>
     </>
   );
-                }
+}
