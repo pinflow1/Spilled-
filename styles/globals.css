@@ -50,3 +50,20 @@ input::placeholder {
   0%   { background-position: -200% 0; }
   100% { background-position:  200% 0; }
 }
+
+/* Remove tap highlight on mobile (blue flash) */
+button, a, div[role="button"], [tabindex] {
+  -webkit-tap-highlight-color: transparent;
+  tap-highlight-color: transparent;
+}
+
+/* Remove focus outline for better native feel (keeps accessibility for keyboard users via :focus-visible) */
+button:focus, a:focus {
+  outline: none;
+}
+
+/* Keep outline only for keyboard navigation (optional but good for accessibility) */
+button:focus-visible, a:focus-visible {
+  outline: 2px solid #666;
+  outline-offset: 2px;
+}
