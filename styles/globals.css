@@ -57,13 +57,38 @@ button, a, div[role="button"], [tabindex] {
   tap-highlight-color: transparent;
 }
 
-/* Remove focus outline for better native feel (keeps accessibility for keyboard users via :focus-visible) */
+/* Remove focus outline for better native feel */
 button:focus, a:focus {
   outline: none;
 }
 
-/* Keep outline only for keyboard navigation (optional but good for accessibility) */
+/* Keep outline only for keyboard navigation */
 button:focus-visible, a:focus-visible {
   outline: 2px solid #666;
   outline-offset: 2px;
+}
+
+/* Force remove all tap highlights and active states - kills blue flash completely */
+button,
+button:active,
+button:focus,
+a,
+a:active,
+a:focus,
+div[role="button"],
+[tabindex],
+* {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none;
+}
+
+/* Prevent default active background on buttons */
+button:active {
+  background-color: transparent !important;
+}
+
+/* Restore text selection only where needed */
+input, textarea, [contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
 }
