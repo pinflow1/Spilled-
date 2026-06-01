@@ -51,24 +51,9 @@ input::placeholder {
   100% { background-position:  200% 0; }
 }
 
-/* Remove tap highlight on mobile (blue flash) */
-button, a, div[role="button"], [tabindex] {
-  -webkit-tap-highlight-color: transparent;
-  tap-highlight-color: transparent;
-}
-
-/* Remove focus outline for better native feel */
-button:focus, a:focus {
-  outline: none;
-}
-
-/* Keep outline only for keyboard navigation */
-button:focus-visible, a:focus-visible {
-  outline: 2px solid #666;
-  outline-offset: 2px;
-}
-
-/* Force remove all tap highlights and active states - kills blue flash completely */
+/* ────────────────────────────────────────────────────────────────────────── */
+/* Force remove all tap highlights (blue flash) on buttons and interactive elements */
+/* ────────────────────────────────────────────────────────────────────────── */
 button,
 button:active,
 button:focus,
@@ -78,11 +63,13 @@ a:focus,
 div[role="button"],
 [tabindex],
 * {
+  -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
   -webkit-tap-highlight-color: transparent !important;
-  -webkit-touch-callout: none;
+  -webkit-focus-ring-color: rgba(0,0,0,0);
+  outline: none !important;
 }
 
-/* Prevent default active background on buttons */
+/* Prevent any default active background color */
 button:active {
   background-color: transparent !important;
 }
