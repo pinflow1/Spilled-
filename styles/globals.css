@@ -4,6 +4,8 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
 
 html, body, #root {
@@ -13,6 +15,7 @@ html, body, #root {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -27,7 +30,37 @@ input::placeholder {
   color: #333;
 }
 
-/* Hide scrollbars globally but keep scroll */
+/* Interactive elements */
+button,
+a,
+div[role="button"],
+[tabindex]:not([tabindex="-1"]),
+label,
+input[type="button"],
+input[type="submit"],
+input[type="checkbox"],
+input[type="radio"] {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Remove focus outlines */
+button:focus,
+button:active,
+a:focus,
+a:active,
+div[role="button"]:focus,
+div[role="button"]:active,
+[role="button"]:focus,
+button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Hide scrollbars */
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -49,43 +82,4 @@ input::placeholder {
 @keyframes shimmer {
   0%   { background-position: -200% 0; }
   100% { background-position:  200% 0; }
-}
-
-/* ==================== ENHANCED TAP HIGHLIGHT REMOVAL ==================== */
-html, body {
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Target all interactive elements */
-button,
-a,
-div[role="button"],
-[tabindex]:not([tabindex="-1"]),
-label,
-input[type="button"],
-input[type="submit"],
-input[type="checkbox"],
-input[type="radio"] {
-  -webkit-tap-highlight-color: transparent !important;
-  -webkit-touch-callout: none;
-  touch-action: manipulation;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-/* Remove focus and active outlines that can mimic highlights */
-button:focus,
-button:active,
-a:focus,
-a:active,
-div[role="button"]:focus,
-div[role="button"]:active {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-/* Extra safety for React / framework components */
-[role="button"]:focus,
-button:focus-visible {
-  outline: none !important;
 }
