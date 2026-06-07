@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
-import supabase from '../lib/supabase'
 
-// ── CATEGORIES MAP ─────────────────────────────────────────────────────────
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
+
 const CATEGORY_MAP = {
   "For You":       null,
   "Early Signals": "emerging",
@@ -11,6 +12,58 @@ const CATEGORY_MAP = {
   "Business":      "finance",
   "Sports":        "sports",
   "Politics":      "politics",
+}
+
+// Direct REST fetch — bypasses SDK entirely
+async function fetchNarratives(filters = {}) {
+  const params = new URLSearchParams()
+  params.set("select", "*")
+  params.set("order", "narrative_score.desc,first_seen.desc")
+  params.set("limit", "30")
+
+  // Status filter
+  if (filters.status) {
+    params.set("status", `eq.${filters.status}`)
+  } else {
+    params.set("status", "in.(emerging,active)")
+  }
+
+  // Category filter
+  if (filters.category) {
+    params.set("category", `ilike.%25${filters.category}%25`)
+  }
+
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/narratives?${params.toString()}`,
+    {
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json",
+      },
+    }
+  )
+
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`${res.status}: ${text}`)
+  }
+
+  return res.json()
+}
+
+async function fetchThreadPosts(narrativeId) {
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/thread_posts?story_id=eq.${narrativeId}&order=order_index.asc`,
+    {
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+      },
+    }
+  )
+  if (!res.ok) return []
+  return res.json()
 }
 
 // ── MAIN FEED HOOK ─────────────────────────────────────────────────────────
@@ -26,25 +79,16 @@ export function useFeed(category = "For You") {
       else setLoading(true)
       setError(null)
 
-      let query = supabase
-        .from("narratives")
-        .select("*")
-        .in("status", ["emerging", "active"])
-        .order("narrative_score", { ascending: false })
-        .order("first_seen", { ascending: false })
-        .limit(30)
-
-      // Filter by category
       const categoryFilter = CATEGORY_MAP[category]
+      const filters = {}
+
       if (categoryFilter === "emerging") {
-        query = query.eq("status", "emerging")
+        filters.status = "emerging"
       } else if (categoryFilter) {
-        query = query.ilike("category", `%${categoryFilter}%`)
+        filters.category = categoryFilter
       }
 
-      const { data, error: fetchErr } = await query
-      if (fetchErr) throw fetchErr
-
+      const data = await fetchNarratives(filters)
       setStories(data || [])
     } catch (err) {
       console.error("[useFeed]", err.message)
@@ -57,32 +101,6 @@ export function useFeed(category = "For You") {
 
   useEffect(() => {
     fetchStories()
-
-    // Realtime — push new narratives to feed live
-    const channel = supabase
-      .channel("narratives_feed")
-      .on("postgres_changes", {
-        event: "INSERT",
-        schema: "public",
-        table: "narratives",
-      }, (payload) => {
-        if (["emerging", "active"].includes(payload.new.status)) {
-          setStories(prev => [payload.new, ...prev].slice(0, 30))
-        }
-      })
-      .on("postgres_changes", {
-        event: "UPDATE",
-        schema: "public",
-        table: "narratives",
-      }, (payload) => {
-        setStories(prev =>
-          prev.map(s => s.id === payload.new.id ? payload.new : s)
-            .filter(s => ["emerging", "active"].includes(s.status))
-        )
-      })
-      .subscribe()
-
-    return () => supabase.removeChannel(channel)
   }, [fetchStories])
 
   return {
@@ -95,7 +113,6 @@ export function useFeed(category = "For You") {
 }
 
 // ── TOP STORIES HOOK ───────────────────────────────────────────────────────
-// Queries narratives table — highest scoring active stories
 export function useTopStories(limit = 4) {
   const [stories, setStories] = useState([])
   const [loading, setLoading] = useState(true)
@@ -103,14 +120,8 @@ export function useTopStories(limit = 4) {
   useEffect(() => {
     async function fetch() {
       try {
-        const { data, error } = await supabase
-          .from("narratives")
-          .select("*")
-          .in("status", ["emerging", "active"])
-          .order("narrative_score", { ascending: false })
-          .limit(limit)
-
-        if (!error) setStories(data || [])
+        const data = await fetchNarratives({})
+        setStories((data || []).slice(0, limit))
       } catch (err) {
         console.error("[useTopStories]", err.message)
       } finally {
@@ -118,47 +129,23 @@ export function useTopStories(limit = 4) {
       }
     }
     fetch()
-
-    // Realtime updates for top stories
-    const channel = supabase
-      .channel("top_stories")
-      .on("postgres_changes", {
-        event: "UPDATE",
-        schema: "public",
-        table: "narratives",
-      }, () => {
-        fetch() // refetch on any narrative update
-      })
-      .subscribe()
-
-    return () => supabase.removeChannel(channel)
   }, [limit])
 
   return { stories, loading }
 }
 
 // ── THREAD HOOK ────────────────────────────────────────────────────────────
-// Pulls thread posts for a narrative from thread_posts table
 export function useThread(narrativeId) {
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    if (!narrativeId) {
-      setLoading(false)
-      return
-    }
+    if (!narrativeId) { setLoading(false); return }
 
     async function fetch() {
       try {
-        const { data, error: fetchErr } = await supabase
-          .from("thread_posts")
-          .select("*")
-          .eq("story_id", narrativeId)
-          .order("order_index", { ascending: true })
-
-        if (fetchErr) throw fetchErr
+        const data = await fetchThreadPosts(narrativeId)
         setPosts(data || [])
       } catch (err) {
         console.error("[useThread]", err.message)
@@ -182,13 +169,23 @@ export function useSavedStories(userId) {
     if (!userId) { setLoading(false); return }
 
     async function fetch() {
-      const { data } = await supabase
-        .from("saved_stories")
-        .select("story_id")
-        .eq("user_id", userId)
-
-      setSavedIds(data?.map(s => s.story_id) || [])
-      setLoading(false)
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/saved_stories?user_id=eq.${userId}&select=story_id`,
+          {
+            headers: {
+              "apikey": SUPABASE_KEY,
+              "Authorization": `Bearer ${SUPABASE_KEY}`,
+            },
+          }
+        )
+        const data = await res.json()
+        setSavedIds(data?.map(s => s.story_id) || [])
+      } catch (err) {
+        console.error("[useSavedStories]", err.message)
+      } finally {
+        setLoading(false)
+      }
     }
     fetch()
   }, [userId])
@@ -199,16 +196,19 @@ export function useSavedStories(userId) {
 
     if (isSaved) {
       setSavedIds(prev => prev.filter(id => id !== storyId))
-      await supabase.from("saved_stories")
-        .delete()
-        .eq("user_id", userId)
-        .eq("story_id", storyId)
+      await fetch(`${SUPABASE_URL}/rest/v1/saved_stories?user_id=eq.${userId}&story_id=eq.${storyId}`, {
+        method: "DELETE",
+        headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` },
+      })
     } else {
       setSavedIds(prev => [...prev, storyId])
-      await supabase.from("saved_stories")
-        .insert({ user_id: userId, story_id: storyId })
+      await fetch(`${SUPABASE_URL}/rest/v1/saved_stories`, {
+        method: "POST",
+        headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: userId, story_id: storyId }),
+      })
     }
   }
 
   return { savedIds, toggleSave, loading }
-}
+    }
